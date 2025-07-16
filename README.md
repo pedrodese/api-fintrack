@@ -17,6 +17,7 @@ FinTrack is a RESTful API designed to help users manage their personal finances 
 - **CSV Import** - Bulk transaction import functionality
 - **Installment Management** - Multi-month expense tracking for large purchases
 - **Notifications** - Budget alerts and goal reminder system
+- **Event-Driven Architecture** - Asynchronous processing with Apache Kafka
 
 ## 🛠️ Technology Stack
 
@@ -42,6 +43,12 @@ FinTrack is a RESTful API designed to help users manage their personal finances 
 - **Redis 7** - Distributed caching for improved performance
 - **Spring Cache** - Cache abstraction layer
 
+### Messaging & Events
+
+- **Apache Kafka** - Distributed event streaming platform
+- **Spring Kafka** - Kafka integration for Spring Boot
+- **Event-Driven Architecture** - Asynchronous event processing
+
 ### Documentation & Monitoring
 
 - **OpenAPI/Swagger** - Interactive API documentation
@@ -60,11 +67,12 @@ FinTrack is a RESTful API designed to help users manage their personal finances 
 
 - **Testcontainers** - Integration testing with real databases
 - **Spring Security Test** - Security testing utilities
+- **Spring Kafka Test** - Kafka testing utilities
 - **JUnit 5** - Unit and integration testing framework
 
 ## 🏗️ Architecture
 
-The application follows **Clean Architecture** principles with a clear separation of concerns:
+The application follows **Clean Architecture** principles with a clear separation of concerns and **Event-Driven Architecture** for asynchronous processing:
 
 ```
 src/main/java/com/example/api/fintrack/
