@@ -1,0 +1,50 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/fintrack
+    username: fintrack_user
+    password: fintrack_password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  cache:
+    type: redis
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+  security:
+    jwt:
+      secret: ${JWT_SECRET:fq5WvFMTF1IPadRoDquxviwRzSF6JAwV1kV13sOBA6Yov0eb+L2qIDKEepm3cafXRgX57NqlDm7hIjwd1mQgbw==}
+      expiration: 86400000 # 24 hours
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+logging:
+  level:
+    com.example.api.fintrack: DEBUG
+    org.hibernate.SQL: DEBUG
+
+server:
+  port: 8080

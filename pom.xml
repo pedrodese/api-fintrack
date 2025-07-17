@@ -33,6 +33,7 @@
 		<springdoc.version>2.2.0</springdoc.version>
 		<logstash.version>7.4</logstash.version>
 		<opencsv.version>5.8</opencsv.version>
+		<querydsl.version>5.0.0</querydsl.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -113,11 +114,7 @@
 			<version>${springdoc.version}</version>
 		</dependency>
 		
-		<!-- Monitoring -->
-		<dependency>
-			<groupId>io.micrometer</groupId>
-			<artifactId>micrometer-registry-prometheus</artifactId>
-		</dependency>
+
 		<dependency>
 			<groupId>net.logstash.logback</groupId>
 			<artifactId>logstash-logback-encoder</artifactId>
@@ -169,6 +166,20 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- QueryDSL -->
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+			<version>${querydsl.version}</version>
+			<classifier>jakarta</classifier>
+		</dependency>
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-apt</artifactId>
+			<version>${querydsl.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -188,6 +199,11 @@
 							<artifactId>mapstruct-processor</artifactId>
 							<version>${mapstruct.version}</version>
 						</path>
+						<path>
+							<groupId>com.querydsl</groupId>
+							<artifactId>querydsl-apt</artifactId>
+							<version>${querydsl.version}</version>
+						</path>
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
@@ -203,6 +219,8 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			
+
 		</plugins>
 	</build>
 

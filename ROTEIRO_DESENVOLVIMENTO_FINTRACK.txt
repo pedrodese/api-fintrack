@@ -1,0 +1,597 @@
+ROTEIRO DE DESENVOLVIMENTO ATUALIZADO – FINTRACK
+==================================================
+
+VISÃO GERAL
+-----------
+FinTrack é um sistema de gestão financeira pessoal com arquitetura moderna,
+focando em simplicidade de uso e insights úteis para o usuário final.
+
+TECNOLOGIAS UTILIZADAS
+----------------------
+• Spring Boot 3.5.3 + Java 21
+• Spring Security + JWT (jjwt 0.12.3)
+• Spring Data JPA + PostgreSQL 15 + Flyway
+• Redis 7 + Spring Cache
+• Apache Kafka + Spring Kafka
+• MapStruct + Lombok
+• OpenAPI/Swagger + Spring Actuator
+• Prometheus + Logback
+• OpenCSV + Bean Validation
+• Testcontainers para testes
+
+ETAPA 1: SETUP DO PROJETO E INFRAESTRUTURA
+==========================================
+Objetivo: Criar base sólida com todas as tecnologias modernas
+
+Estrutura Inicial:
+src/main/java/com/example/api/fintrack/
+├── domain/                    # Core business logic
+│   ├── entities/             # JPA entities (User, Transaction, Category, etc.)
+│   ├── enums/               # Domain enums (TransactionType, etc.)
+│   ├── events/              # Domain events (TransactionCreatedEvent, etc.)
+│   └── exceptions/          # Domain exceptions
+├── application/              # Use cases and application logic
+│   ├── services/            # Application services
+│   ├── dto/                 # Data Transfer Objects
+│   ├── events/              # Application events
+│   └── mappers/             # MapStruct mappers
+├── infrastructure/           # Technical implementations
+│   ├── persistence/         # Repositories and JPA configs
+│   ├── messaging/           # Kafka configuration and producers
+│   ├── security/            # JWT and security configs
+│   ├── cache/               # Redis cache configuration
+│   └── config/              # General configurations
+└── interfaces/               # Controllers and APIs
+    ├── rest/                # REST Controllers
+    ├── consumers/           # Kafka event consumers
+    ├── exceptions/          # GlobalExceptionHandler
+    └── validators/          # Custom validators
+
+Dependências Completas:
+• Spring Boot 3.5.3 + Java 21
+• Spring Security + JWT (jjwt 0.12.3)
+• Spring Data JPA + PostgreSQL 15 + Flyway
+• Redis 7 + Spring Cache
+• Apache Kafka + Spring Kafka
+• MapStruct + Lombok
+• OpenAPI/Swagger + Spring Actuator
+• Prometheus + Logback
+• OpenCSV + Bean Validation
+• Testcontainers para testes
+
+Infraestrutura:
+• Docker Compose com PostgreSQL, Redis, Kafka
+• Multi-profile (dev, test, prod)
+• Health checks e monitoramento
+• Logs estruturados
+
+ETAPA 2: AUTENTICAÇÃO E SEGURANÇA
+=================================
+Objetivo: Sistema de autenticação robusto
+
+Funcionalidades:
+• Cadastro e login com JWT
+• Refresh tokens
+• Middleware de autenticação
+• Auditoria de acessos
+
+Endpoints:
+POST /api/auth/register
+POST /api/auth/login
+POST /api/auth/refresh
+POST /api/auth/logout
+GET  /api/users/profile
+PUT  /api/users/profile
+PUT  /api/users/password
+
+ETAPA 3: ENTIDADES BASE E CRUD
+==============================
+Objetivo: Implementar entidades principais
+
+Entidades:
+• User (sem roles, foco usuário final)
+• Category (com frequency: FIXED/VARIABLE)
+• Transaction (receitas e despesas)
+• UserPreferences (configurações personalizadas)
+
+Endpoints:
+GET    /api/categories
+POST   /api/categories
+PUT    /api/categories/{id}
+DELETE /api/categories/{id}
+
+GET    /api/transactions?month=06&year=2025&type=EXPENSE
+POST   /api/transactions
+GET    /api/transactions/{id}
+PUT    /api/transactions/{id}
+DELETE /api/transactions/{id}
+
+ETAPA 4: CACHE E PERFORMANCE
+============================
+Objetivo: Implementar cache distribuído
+
+Redis Cache:
+• Cache de categorias
+• Cache de dashboard
+• Rate limiting
+• Invalidação automática
+
+Configurações:
+• Cache de 10 minutos para dados estáticos
+• Invalidação quando há mudanças
+• Fallback para cache local
+
+ETAPA 5: EVENT-DRIVEN ARCHITECTURE
+==================================
+Objetivo: Implementar Kafka para processamento assíncrono
+
+Eventos de Domínio:
+• TransactionCreatedEvent
+• BudgetLimitExceededEvent
+• GoalCompletedEvent
+• ScoreUpdatedEvent
+
+Producers:
+• TransactionService publica eventos
+• NotificationService publica alertas
+• AuditService publica logs
+
+Consumers:
+• NotificationConsumer (alertas)
+• AuditConsumer (logs)
+• CsvProcessingConsumer (importação)
+
+ETAPA 6: PLANEJAMENTO MENSAL E DASHBOARD
+========================================
+Objetivo: Sistema de orçamento inteligente
+
+Entidades:
+• MonthlyBudget (planejamento por categoria)
+• FinancialScore (score de saúde financeira)
+• ScoreHistory (histórico de evolução)
+
+Funcionalidades:
+• Criação de orçamentos mensais
+• Acompanhamento gasto vs planejado
+• Score automático (0-100)
+• Dicas personalizadas
+
+Endpoints:
+POST   /api/budgets
+GET    /api/budgets?month=06&year=2025
+PUT    /api/budgets/{id}
+DELETE /api/budgets/{id}
+
+GET    /api/dashboard/summary?month=06&year=2025
+GET    /api/dashboard/score
+GET    /api/dashboard/category-breakdown
+GET    /api/dashboard/monthly-comparison
+
+ETAPA 7: METAS FINANCEIRAS
+==========================
+Objetivo: Sistema motivacional de metas
+
+Entidades:
+• FinancialGoal (metas de economia/compra)
+• GoalContribution (contribuições)
+
+Funcionalidades:
+• Criação de metas
+• Contribuições manuais e automáticas
+• Progresso visual
+• Lembretes configuráveis
+
+Endpoints:
+GET    /api/goals
+POST   /api/goals
+GET    /api/goals/{id}
+PUT    /api/goals/{id}
+DELETE /api/goals/{id}
+POST   /api/goals/{id}/contribute
+
+ETAPA 8: PARCELAMENTOS
+======================
+Objetivo: Controle de compromissos futuros
+
+Entidades:
+• Installment (parcelamentos)
+• InstallmentTransaction (parcelas individuais)
+
+Funcionalidades:
+• Cadastro de despesas parceladas
+• Divisão automática por meses
+• Controle de vencimentos
+• Alertas de pagamento
+
+Endpoints:
+POST   /api/installments
+GET    /api/installments?month=07&year=2025
+PUT    /api/installments/{id}
+DELETE /api/installments/{id}
+
+ETAPA 9: SIMULADOR DE CENÁRIOS
+==============================
+Objetivo: Ferramenta motivacional
+
+Entidade:
+• FinancialScenario (simulações)
+
+Funcionalidades:
+• "E se eu economizar X por mês?"
+• "E se eu reduzir gastos com Y?"
+• Projeção de score futuro
+• Impacto nas metas
+
+Endpoints:
+GET    /api/scenarios
+POST   /api/scenarios
+GET    /api/scenarios/{id}
+DELETE /api/scenarios/{id}
+
+ETAPA 10: IMPORTAÇÃO CSV
+========================
+Objetivo: Facilitação de entrada de dados
+
+Entidade:
+• CsvImport (controle de importações)
+
+Funcionalidades:
+• Upload de CSV
+• Processamento assíncrono via Kafka
+• Mapeamento automático por categoria
+• Edição manual dos dados
+
+Endpoints:
+POST   /api/csv-imports/upload
+GET    /api/csv-imports
+GET    /api/csv-imports/{id}/status
+
+ETAPA 11: SISTEMA DE NOTIFICAÇÕES
+=================================
+Objetivo: Engajamento e prevenção
+
+Entidade:
+• Notification (notificações)
+
+Funcionalidades:
+• Alertas de orçamento (threshold configurável)
+• Lembretes de metas
+• Vencimentos de parcelas
+• Atualizações de score
+• Sugestões de cenários
+
+Endpoints:
+GET    /api/notifications
+PUT    /api/notifications/{id}/read
+PUT    /api/notifications/read-all
+
+ETAPA 12: MONITORAMENTO E OBSERVABILIDADE
+=========================================
+Objetivo: Sistema robusto e monitorado
+
+Funcionalidades:
+• Health checks (PostgreSQL, Redis, Kafka)
+• Métricas Prometheus
+• Logs estruturados
+• Performance monitoring
+
+Endpoints:
+GET /actuator/health
+GET /actuator/metrics
+GET /actuator/prometheus
+
+ETAPA 13: TESTES E QUALIDADE
+============================
+Objetivo: Cobertura completa de testes
+
+Testes:
+• Unit Tests: Services, Mappers, Validators
+• Integration Tests: Controllers, Repositories
+• Testcontainers: PostgreSQL, Redis, Kafka
+• Security Tests: JWT, Authentication
+
+ETAPA 14: DOCUMENTAÇÃO E DEPLOY
+===============================
+Objetivo: Sistema pronto para produção
+
+Documentação:
+• OpenAPI/Swagger completo
+• README atualizado
+• Docker configuration
+• Deploy scripts
+
+ORDEM DE IMPLEMENTAÇÃO RECOMENDADA
+==================================
+
+FASE 1: BASE SÓLIDA (Etapas 1-4)
+---------------------------------
+1. Setup completo com todas as dependências
+2. Autenticação JWT
+3. CRUD básico
+4. Cache Redis
+
+FASE 2: CORE FEATURES (Etapas 5-8)
+----------------------------------
+5. Kafka e eventos
+6. Dashboard e orçamentos
+7. Metas financeiras
+8. Parcelamentos
+
+FASE 3: FEATURES AVANÇADAS (Etapas 9-12)
+-----------------------------------------
+9. Simulador de cenários
+10. Importação CSV
+11. Notificações
+12. Monitoramento
+
+FASE 4: QUALIDADE E DEPLOY (Etapas 13-14)
+------------------------------------------
+13. Testes completos
+14. Documentação e deploy
+
+BENEFÍCIOS DO ROTEIRO ATUALIZADO
+================================
+
+ARQUITETURA MODERNA
+-------------------
+• Event-Driven com Kafka
+• Cache distribuído com Redis
+• Monitoramento completo
+• Testes robustos
+
+FUNCIONALIDADES COMPLETAS
+-------------------------
+• Score de saúde financeira
+• Simulador de cenários
+• Notificações inteligentes
+• Importação assíncrona
+
+ESCALABILIDADE
+--------------
+• Base sólida para crescimento
+• Padrões estabelecidos
+• Performance otimizada
+• Manutenibilidade
+
+ENTIDADES DO SISTEMA
+====================
+
+ENTIDADES PRINCIPAIS
+--------------------
+1. USERS - Usuários do sistema
+2. CATEGORIES - Categorias de transações
+3. TRANSACTIONS - Receitas e despesas
+4. MONTHLY_BUDGETS - Orçamentos mensais
+5. FINANCIAL_GOALS - Metas financeiras
+6. GOAL_CONTRIBUTIONS - Contribuições para metas
+7. FINANCIAL_SCORES - Scores de saúde financeira
+8. SCORE_HISTORY - Histórico de scores
+9. FINANCIAL_SCENARIOS - Simulador de cenários
+10. INSTALLMENTS - Parcelamentos
+11. INSTALLMENT_TRANSACTIONS - Parcelas individuais
+12. NOTIFICATIONS - Sistema de notificações
+13. CSV_IMPORTS - Controle de importações
+14. USER_PREFERENCES - Preferências do usuário
+15. AUDIT_LOGS - Logs de auditoria
+
+RELACIONAMENTOS PRINCIPAIS
+--------------------------
+• USERS (1) ←→ (N) TRANSACTIONS
+• USERS (1) ←→ (N) CATEGORIES (personalizadas)
+• USERS (1) ←→ (N) MONTHLY_BUDGETS
+• USERS (1) ←→ (N) FINANCIAL_GOALS
+• USERS (1) ←→ (N) INSTALLMENTS
+• USERS (1) ←→ (N) NOTIFICATIONS
+• USERS (1) ←→ (N) CSV_IMPORTS
+• USERS (1) ←→ (1) USER_PREFERENCES
+• USERS (1) ←→ (N) AUDIT_LOGS
+• USERS (1) ←→ (N) FINANCIAL_SCORES
+• USERS (1) ←→ (N) SCORE_HISTORY
+• USERS (1) ←→ (N) FINANCIAL_SCENARIOS
+
+FUNCIONALIDADES SUPORTADAS
+==========================
+
+1. AUTENTICAÇÃO E PERFIL
+------------------------
+• Cadastro e login de usuários
+• Visualização e edição do perfil
+• Preferências personalizadas
+• Suporte a múltiplos usuários
+
+2. GESTÃO DE RECEITAS E DESPESAS
+--------------------------------
+• Registro com valor, data, categoria, descrição
+• Tipo fixo ou pontual (frequency)
+• Edição e remoção
+• Filtros por período e categoria
+
+3. PLANEJAMENTO MENSAL
+----------------------
+• Limite de gasto por categoria
+• Acompanhamento usado vs planejado
+• Alertas visuais ao ultrapassar limite
+• Threshold configurável
+
+4. DASHBOARD/OVERVIEW FINANCEIRO
+--------------------------------
+• Total de receitas e despesas
+• Saldo atual
+• Gasto por categoria
+• Evolução mês a mês
+• Comparativo com mês anterior
+
+5. METAS FINANCEIRAS
+--------------------
+• Criação de metas de economia/aquisição
+• Acompanhamento do progresso
+• Contribuição manual ou automática
+• Lembretes configuráveis
+
+6. SCORE DE SAÚDE FINANCEIRA
+----------------------------
+• Cálculo automático (0-100)
+• Baseado em hábitos financeiros
+• Histórico de evolução
+• Dicas para melhorar
+• Alertas de score baixo
+
+7. PARCELAMENTOS E DÍVIDAS
+--------------------------
+• Registro de despesas parceladas
+• Divisão automática dos valores
+• Visão do impacto mensal
+• Total de parcelas em aberto
+• Alertas de vencimento
+
+8. SIMULADOR DE CENÁRIOS
+------------------------
+• "E se eu economizar X por mês?"
+• "E se eu reduzir gastos com Y?"
+• Projeção de score futuro
+• Impacto nas metas
+• Comparativo de cenários
+
+9. IMPORTAÇÃO DE EXTRATO
+------------------------
+• Upload de CSV
+• Processamento assíncrono via Kafka
+• Mapeamento automático por categoria
+• Edição manual dos dados
+
+10. NOTIFICAÇÕES E LEMBRETES
+----------------------------
+• Alertas de orçamento (threshold configurável)
+• Lembretes de metas
+• Vencimentos de parcelas
+• Atualizações de score
+• Sugestões de cenários
+• Prioridades configuráveis
+
+VANTAGENS DO DESIGN COMPLETO
+============================
+
+FOCO NO USUÁRIO FINAL
+---------------------
+• Simplicidade de uso
+• Insights úteis com score e cenários
+• Personalização completa
+• Motivação com progresso visual
+
+FUNCIONALIDADES AVANÇADAS
+-------------------------
+• Score didático para educação financeira
+• Simulador motivador de cenários
+• Alertas inteligentes personalizados
+• Histórico completo de evolução
+
+ESCALABILIDADE
+--------------
+• Índices otimizados para performance
+• Cache distribuído com Redis
+• Processamento assíncrono com Kafka
+• Base sólida para crescimento
+
+MANUTENIBILIDADE
+----------------
+• Estrutura clara e bem definida
+• Constraints de integridade
+• Auditoria completa
+• Padrões estabelecidos
+
+CONSTRAINTS E REGRAS DE NEGÓCIO
+===============================
+
+CONSTRAINTS DE INTEGRIDADE
+--------------------------
+• Users: email único
+• Categories: nome único por usuário
+• Transactions: valor > 0, data <= hoje
+• Monthly Budgets: único por usuário/categoria/mês/ano
+• Financial Goals: valor alvo > 0, deadline > hoje
+• Installments: quantidade > 0, valor total > 0
+• Financial Scores: score entre 0-100
+• Score History: score entre 0-100
+• Financial Scenarios: score projetado entre 0-100
+• User Preferences: thresholds entre 0-100
+
+ÍNDICES RECOMENDADOS
+--------------------
+• transactions_user_date: (user_id, date)
+• transactions_category: (category_id)
+• monthly_budgets_user_month: (user_id, month, year)
+• notifications_user_read: (user_id, read)
+• audit_logs_user_date: (user_id, created_at)
+• transactions_user_type_date: (user_id, type, date)
+• goals_user_status: (user_id, status)
+• installments_user_status: (user_id, status)
+• financial_scores_user_month: (user_id, month, year)
+• score_history_user_month: (user_id, month, year)
+• financial_scenarios_user: (user_id)
+
+MONITORAMENTO E OBSERVABILIDADE
+===============================
+
+HEALTH CHECKS
+-------------
+• Application Health: /actuator/health
+• Database Health: /actuator/health/db
+• Redis Health: /actuator/health/redis
+• Kafka Health: /actuator/health/kafka
+
+MÉTRICAS
+--------
+• Prometheus Metrics: /actuator/prometheus
+• Application Metrics: /actuator/metrics
+• Custom Business Metrics
+
+LOGS
+----
+• Application Logs: logs/fintrack.log
+• Log Level: Configurável por profile
+• Structured Logging com Logstash
+
+CONFIGURAÇÕES POR PERFIL
+========================
+
+DEVELOPMENT
+-----------
+• JPA show-sql: true
+• Logging level: DEBUG
+• Cache: Redis local
+• Kafka: Local
+
+TEST
+-----
+• JPA ddl-auto: create-drop
+• Logging level: INFO
+• Testcontainers para infraestrutura
+• Cache: Redis test
+
+PRODUCTION
+----------
+• JPA show-sql: false
+• Logging level: INFO
+• Cache: Redis configurável
+• Kafka: Configurável
+• Health checks limitados
+
+CONSIDERAÇÕES FINAIS
+====================
+
+Este roteiro representa uma implementação completa e moderna do FinTrack,
+utilizando as melhores práticas de desenvolvimento e tecnologias atuais.
+
+O sistema está preparado para:
+• Crescimento e escalabilidade
+• Manutenibilidade a longo prazo
+• Performance otimizada
+• Experiência do usuário excepcional
+
+A arquitetura event-driven com Kafka e cache distribuído com Redis
+garantem que o sistema seja robusto, responsivo e preparado para
+futuras expansões.
+
+==================================================
+ROTEIRO DE DESENVOLVIMENTO ATUALIZADO – FINTRACK
+================================================== 
