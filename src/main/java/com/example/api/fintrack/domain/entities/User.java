@@ -1,5 +1,6 @@
 package com.example.api.fintrack.domain.entities;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.example.api.fintrack.domain.enums.UserStatus;
@@ -43,7 +44,7 @@ public class User {
     private String phone;
 
     @Column(name = "birth_date")
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

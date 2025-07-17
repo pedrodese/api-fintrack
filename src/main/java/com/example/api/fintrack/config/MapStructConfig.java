@@ -1,4 +1,4 @@
-package com.example.api.fintrack.infrastructure.config;
+package com.example.api.fintrack.config;
 
 import org.mapstruct.MapperConfig;
 import org.mapstruct.ReportingPolicy;

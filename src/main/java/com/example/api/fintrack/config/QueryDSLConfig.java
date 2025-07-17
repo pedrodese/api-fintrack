@@ -1,4 +1,4 @@
-package com.example.api.fintrack.infrastructure.config;
+package com.example.api.fintrack.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
