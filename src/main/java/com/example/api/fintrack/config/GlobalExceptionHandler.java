@@ -13,6 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.example.api.fintrack.dto.responses.ErrorResponse;
 import com.example.api.fintrack.exceptions.BusinessException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST.value())
                 .error("Validation Error")
                 .message("Dados de entrada inválidos")
-                .details(errors)
+                .details(new HashMap<>(errors))
                 .build();
 
         return ResponseEntity.badRequest().body(errorResponse);
@@ -95,59 +96,5 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-    }
-
-    // Classe interna para representar a resposta de erro
-    public static class ErrorResponse {
-        private LocalDateTime timestamp;
-        private int status;
-        private String error;
-        private String message;
-        private Map<String, Object> details;
-
-        // Builder pattern
-        public static ErrorResponseBuilder builder() {
-            return new ErrorResponseBuilder();
-        }
-
-        public static class ErrorResponseBuilder {
-            private ErrorResponse errorResponse = new ErrorResponse();
-
-            public ErrorResponseBuilder timestamp(LocalDateTime timestamp) {
-                errorResponse.timestamp = timestamp;
-                return this;
-            }
-
-            public ErrorResponseBuilder status(int status) {
-                errorResponse.status = status;
-                return this;
-            }
-
-            public ErrorResponseBuilder error(String error) {
-                errorResponse.error = error;
-                return this;
-            }
-
-            public ErrorResponseBuilder message(String message) {
-                errorResponse.message = message;
-                return this;
-            }
-
-            public ErrorResponseBuilder details(Map<String, String> details) {
-                errorResponse.details = new HashMap<>(details);
-                return this;
-            }
-
-            public ErrorResponse build() {
-                return errorResponse;
-            }
-        }
-
-        // Getters
-        public LocalDateTime getTimestamp() { return timestamp; }
-        public int getStatus() { return status; }
-        public String getError() { return error; }
-        public String getMessage() { return message; }
-        public Map<String, Object> getDetails() { return details; }
     }
 } 
