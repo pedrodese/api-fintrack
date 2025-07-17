@@ -72,12 +72,37 @@ FinTrack is a RESTful API designed to help users manage their personal finances 
 
 ## 🏗️ Architecture
 
-The application follows **Clean Architecture** principles with a clear separation of concerns and **Event-Driven Architecture** for asynchronous processing:
+The application follows **Hexagonal Architecture** (Clean Architecture) principles with a clear separation of concerns and **Event-Driven Architecture** for asynchronous processing:
 
 ```
 src/main/java/com/example/api/fintrack/
-├── domain/                    # Core business logic and entities
-├── application/               # Use cases and application services
-├── infrastructure/            # Technical implementations
-└── interfaces/                # Controllers and API endpoints
+├── Application.java
+├── domain/                    # 🎯 Core business logic and entities
+│   ├── entities/             # Domain entities (User, Transaction, etc.)
+│   ├── enums/               # Domain enums (TransactionType, etc.)
+│   ├── events/              # Domain events (UserRegisteredEvent, etc.)
+│   ├── services/            # Domain services (business rules)
+│   └── exceptions/          # Domain exceptions (BusinessException, etc.)
+├── application/              # 🔄 Use cases and application services
+│   ├── services/            # Application services (orchestration)
+│   ├── dto/                 # Data Transfer Objects
+│   └── exceptions/          # Application exceptions
+├── infrastructure/           # 🔧 Technical implementations
+│   ├── config/              # Configuration classes
+│   ├── repositories/        # Repository implementations
+│   ├── messaging/           # Kafka producers/consumers
+│   ├── security/            # JWT, authentication
+│   ├── external/            # External services (Email, etc.)
+│   └── exceptions/          # Infrastructure exceptions
+└── interfaces/               # 🌐 Controllers and API endpoints
+    └── controllers/         # REST Controllers
 ```
+
+### 🎯 Architecture Benefits
+
+- **Separation of Concerns**: Each layer has a specific responsibility
+- **Testability**: Easy to test each layer in isolation
+- **Maintainability**: Changes are isolated to specific layers
+- **Scalability**: Easy to add new features without affecting existing code
+- **Domain-Driven Design**: Business logic is centralized in the domain layer
+- **Dependency Inversion**: High-level modules don't depend on low-level modules

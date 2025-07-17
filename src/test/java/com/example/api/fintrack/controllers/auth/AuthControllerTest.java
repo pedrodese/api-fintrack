@@ -17,10 +17,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.example.api.fintrack.dto.auth.LoginRequest;
-import com.example.api.fintrack.dto.auth.LoginResponse;
-import com.example.api.fintrack.dto.auth.RegisterRequest;
-import com.example.api.fintrack.services.AuthService;
+import com.example.api.fintrack.application.dto.auth.LoginRequest;
+import com.example.api.fintrack.application.dto.auth.LoginResponse;
+import com.example.api.fintrack.application.dto.auth.RegisterRequest;
+import com.example.api.fintrack.application.services.AuthService;
+import com.example.api.fintrack.interfaces.controllers.AuthController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ExtendWith(MockitoExtension.class)
