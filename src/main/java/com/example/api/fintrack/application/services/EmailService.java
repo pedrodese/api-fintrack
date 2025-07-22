@@ -22,23 +22,23 @@ public class EmailService {
     @Value("${app.email.from-name:FinTrack}")
     private String fromName;
 
-    public void sendWelcomeEmail(String toEmail, String userName) {
+    public void sendWelcomeEmail(String toEmail, String userName, String verificationCode) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setFrom(fromName + " <" + fromEmail + ">");
             helper.setTo(toEmail);
             helper.setSubject("Bem-vindo ao FinTrack! 🎉");
-            helper.setText(createWelcomeEmailHtml(userName), true); // true = HTML
+            helper.setText(createWelcomeEmailHtml(userName, verificationCode), true); // true = HTML
 
             mailSender.send(message);
-            log.info("Email de boas-vindas enviado com sucesso para: {}", toEmail);
+            log.info("Email de boas-vindas com código de verificação enviado com sucesso para: {}", toEmail);
         } catch (Exception e) {
             log.error("Erro ao enviar email de boas-vindas para {}: {}", toEmail, e.getMessage());
         }
     }
 
-    private String createWelcomeEmailHtml(String userName) {
+    private String createWelcomeEmailHtml(String userName, String verificationCode) {
         return """
         <html>
         <head>
@@ -68,6 +68,15 @@ public class EmailService {
             <h1 style="color:#00E676;font-size:28px;margin-top:0;margin-bottom:16px;">Bem-vindo(a) ao FinTrack, %s! 👋</h1>
             <p style="font-size:17px;line-height:1.6;margin-bottom:24px;">Sua jornada rumo a uma vida financeira mais organizada e inteligente começa agora.</p>
     
+            <div style="background:#2A2E30;border-radius:12px;padding:24px;margin:24px 0;text-align:center;border:2px solid #00E676;">
+              <h2 style="color:#00E676;font-size:20px;margin-top:0;margin-bottom:16px;">🔐 Confirme sua conta</h2>
+              <p style="font-size:16px;margin-bottom:16px;">Use o código abaixo para ativar sua conta:</p>
+              <div style="background:#181A1B;border-radius:8px;padding:16px;margin:16px 0;display:inline-block;">
+                <span style="font-size:32px;font-weight:bold;color:#00E676;letter-spacing:8px;">%s</span>
+              </div>
+              <p style="font-size:14px;color:#B0B0B0;margin-top:16px;">Este código expira em 10 minutos</p>
+            </div>
+    
             <hr style="border:none;border-top:1px solid #2F3336;margin:32px 0;">
     
             <h2 style="font-size:20px;margin-bottom:16px;">🧭 O que você poderá fazer com o FinTrack?</h2>
@@ -81,12 +90,6 @@ public class EmailService {
               <div class="card" style="background:#2A2E30;border-radius:12px;padding:16px;">🧠 <strong>Melhore seu Score</strong><br><span style="font-size:14px;">Receba um índice financeiro e dicas práticas.</span></div>
             </div>
     
-            <div style="margin-top:32px;text-align:center;">
-              <a href="#" class="button" style="background:#00E676;color:#181A1B;padding:16px 40px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:17px;display:inline-block;transition:background 0.3s ease;">
-                🚀 Começar agora
-              </a>
-            </div>
-    
             <hr style="border:none;border-top:1px solid #2F3336;margin:40px 0;">
     
             <p style="font-size:15px;margin-bottom:8px;">📬 Se tiver dúvidas, basta responder este e-mail — estamos aqui para ajudar.</p>
@@ -95,7 +98,7 @@ public class EmailService {
           </div>
         </body>
         </html>
-        """.formatted(userName);
+        """.formatted(userName, verificationCode);
     }
     
     

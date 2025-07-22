@@ -19,7 +19,7 @@ public class UserRegisteredConsumer {
     public void consume(UserRegisteredEvent event) {
         log.info("Consumindo evento UserRegistered para email: {}", event.getEmail());
         try {
-            emailService.sendWelcomeEmail(event.getEmail(), event.getName());
+            emailService.sendWelcomeEmail(event.getEmail(), event.getName(), event.getVerificationCode());
         } catch (Exception e) {
             log.error("Erro ao enviar email de boas-vindas para {}: {}", event.getEmail(), e.getMessage());
         }

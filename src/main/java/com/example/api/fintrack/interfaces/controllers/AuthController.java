@@ -24,17 +24,23 @@ public class AuthController {
 
     private final AuthService authService;
 
+    //TODO: Implement the logic to send the email for verify the account in the register endpoint
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
         String response = authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    //TODO: Implement the logic to validate if the account is verified before login
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }
 
-    //TODO: Implement the forgot password endpoint and send the email for verify the account
+    //TODO: Implement the forgot password endpoint
+
+    //TODO: Implement the verify account endpoint //confirm-pin
+
+    //TODO: Implement the resend verification code endpoint //resend-pin
 }

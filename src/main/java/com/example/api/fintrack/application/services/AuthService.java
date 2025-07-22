@@ -1,6 +1,7 @@
 package com.example.api.fintrack.application.services;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,12 +45,14 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .phone(request.getPhone() != null ? request.getPhone().trim() : null)
                 .birthDate(request.getBirthDate())
+                .verificationCode(generateVerificationCode())
+                .verificationCodeExpiresAt(LocalDateTime.now().plusMinutes(10))
                 .build();
 
         User savedUser = userRepository.save(user);
 
         userRegisteredProducer.sendUserRegisteredEvent(
-            new UserRegisteredEvent(savedUser.getEmail(), savedUser.getName())
+            new UserRegisteredEvent(savedUser.getEmail(), savedUser.getName(), savedUser.getVerificationCode())
         );
 
         return "Usuário registrado com sucesso";
@@ -84,5 +87,9 @@ public class AuthService {
                 .email(user.getEmail())
                 .lastLogin(user.getLastLogin())
                 .build();
+    }
+
+    public String generateVerificationCode() {
+        return String.valueOf(new Random().nextInt(9000) + 1000);
     }
 } 
