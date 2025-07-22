@@ -59,9 +59,13 @@ public class User {
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
+    @Column(name = "account_verified")
+    private Boolean accountVerified;
+
     @PrePersist
     private void prePersist() {
         this.createdAt = LocalDateTime.now();
+        this.accountVerified = false;
         this.status = UserStatus.ACTIVE;
     }
 

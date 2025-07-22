@@ -35,4 +35,6 @@ public class AuthController {
         LoginResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }
+
+    //TODO: Implement the forgot password endpoint and send the email for verify the account
 }

@@ -35,8 +35,6 @@ public class AuthService {
     private final UserRegisteredProducer userRegisteredProducer;
 
     public String register(RegisterRequest request) {
-        log.info("Iniciando registro de usuário com email: {}", request.getEmail());
-        
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new BusinessException("Email já está em uso");
         }
@@ -50,18 +48,14 @@ public class AuthService {
 
         User savedUser = userRepository.save(user);
 
-        // Publicar evento no Kafka para envio assíncrono de email
         userRegisteredProducer.sendUserRegisteredEvent(
             new UserRegisteredEvent(savedUser.getEmail(), savedUser.getName())
         );
-
-        log.info("Usuário registrado com sucesso. ID: {}", savedUser.getId());
 
         return "Usuário registrado com sucesso";
     }
 
     public LoginResponse login(LoginRequest request) {
-        log.info("Iniciando login para email: {}", request.getEmail());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail().toLowerCase().trim(),
@@ -79,8 +73,6 @@ public class AuthService {
 
         String token = jwtService.generateToken(userDetails);
         String refreshToken = jwtService.generateRefreshToken(userDetails);
-
-        log.info("Login realizado com sucesso para usuário ID: {}", user.getId());
 
         return LoginResponse.builder()
                 .accessToken(token)
