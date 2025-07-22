@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.api.fintrack.application.dto.responses.ErrorResponse;
+import com.example.api.fintrack.application.exceptions.UserNotFoundException;
 import com.example.api.fintrack.domain.exceptions.BusinessException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +55,20 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+        log.warn("Usuário não encontrado: {}", ex.getMessage());
+        
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.NOT_FOUND.value())
+                .error("User Not Found")
+                .message(ex.getMessage())
+                .build();
+                
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(BadCredentialsException.class)

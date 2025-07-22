@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.api.fintrack.application.dto.auth.LoginRequest;
 import com.example.api.fintrack.application.dto.auth.LoginResponse;
 import com.example.api.fintrack.application.dto.auth.RegisterRequest;
+import com.example.api.fintrack.application.exceptions.UserNotFoundException;
 import com.example.api.fintrack.domain.entities.User;
 import com.example.api.fintrack.domain.exceptions.BusinessException;
 import com.example.api.fintrack.infrastructure.messaging.events.UserRegisteredEvent;
@@ -69,7 +70,7 @@ public class AuthService {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         
         User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new BusinessException("Usuário não encontrado"));
+                .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
 
         user.setLastLogin(LocalDateTime.now());
         userRepository.save(user);
