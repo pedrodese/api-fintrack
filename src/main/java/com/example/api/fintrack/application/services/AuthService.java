@@ -38,7 +38,7 @@ public class AuthService {
 
     public String register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new BusinessException("Email já está em uso");
+            throw new BusinessException("Email já cadastrado, por favor, faça login");
         }
         User user = User.builder()
                 .name(request.getName().trim())
@@ -56,7 +56,7 @@ public class AuthService {
             new UserRegisteredEvent(savedUser.getEmail(), savedUser.getName(), savedUser.getVerificationCode())
         );
 
-        return "Usuário registrado com sucesso";
+        return "Usuário registrado com sucesso, verifique seu email para ativar sua conta";
     }
 
     public LoginResponse login(LoginRequest request) {
