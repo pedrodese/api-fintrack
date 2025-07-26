@@ -81,7 +81,13 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 		
-		<!-- JWT -->
+		<!-- OAuth2 Resource Server -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+		</dependency>
+		
+		<!-- JWT para geração de tokens -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>

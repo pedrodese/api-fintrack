@@ -36,7 +36,8 @@ FinTrack is a RESTful API designed to help users manage their personal finances 
 ### Security
 
 - **Spring Security** - Security framework
-- **JWT (jjwt 0.12.3)** - Token-based authentication
+- **OAuth2 Resource Server** - Modern JWT-based authentication
+- **Method Security** - Granular access control with annotations
 
 ### Cache & Performance
 
