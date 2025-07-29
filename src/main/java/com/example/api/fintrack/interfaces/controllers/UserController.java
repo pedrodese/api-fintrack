@@ -1,7 +1,6 @@
 package com.example.api.fintrack.interfaces.controllers;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/profile")
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('USER')")
 public class UserController {
 
     private final UserService userService;
